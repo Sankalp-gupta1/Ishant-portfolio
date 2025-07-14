@@ -19,19 +19,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Hamburger accessibility with keyboard
-    hamburger.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            this.click();
-        }
-    });
-
-    // Close mobile menu on link click
+    // Close mobile menu when a link is clicked
     document.querySelectorAll('.mobile-menu a').forEach(link => {
         link.addEventListener('click', () => {
             mobileMenu.classList.remove('active');
             hamburger.classList.remove('active');
+
             const lines = hamburger.querySelectorAll('.line');
             lines[0].style.transform = 'rotate(0) translate(0)';
             lines[1].style.opacity = '1';
@@ -49,22 +42,14 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                if (targetElement.scrollIntoView) {
-                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
 
-    // Animate skill bars
+    // Animate skill progress bars
     const skillsSection = document.querySelector('.skills');
     const progressBars = document.querySelectorAll('.progress');
 
@@ -79,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const observer = new IntersectionObserver((entries) => {
+    const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 animateProgressBars();
@@ -88,9 +73,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }, { threshold: 0.1 });
 
-    if (skillsSection) observer.observe(skillsSection);
+    if (skillsSection) {
+        observer.observe(skillsSection);
+    }
 
-    // Form submit
+    // Contact form submission
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', function (e) {
@@ -100,27 +87,17 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = Object.fromEntries(formData);
 
             console.log('Form submitted:', data);
-
-            const successMsg = document.createElement('p');
-            successMsg.textContent = 'Thank you! Your message has been sent.';
-            successMsg.style.color = 'green';
-            successMsg.style.marginTop = '10px';
-            this.appendChild(successMsg);
-
-            setTimeout(() => {
-                successMsg.remove();
-            }, 5000);
-
+            alert('Thank you! Your message has been sent.');
             this.reset();
         });
     }
 
-    // Initial fade-in
+    // Page fade-in animation
     setTimeout(() => {
         document.body.style.opacity = '1';
     }, 100);
 });
 
-// FOUC prevention
+// Set initial body opacity for fade-in effect
 document.body.style.opacity = '0';
 document.body.style.transition = 'opacity 0.5s ease';
